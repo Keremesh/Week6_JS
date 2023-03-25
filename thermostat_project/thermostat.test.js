@@ -49,7 +49,7 @@ describe('Thermostat', () => {
     expect(thermostat.savingMode).toEqual(true)
   });
 
-  describe('sets the maximum temperature', () => {   
+  describe('sets the maximum temperature', () => {
     it('to 25 degrees if saving mode in ON', () => {
       thermostat.savingModeStatus(true);
       for (let i = 0; i < 20; i++) {
@@ -60,13 +60,42 @@ describe('Thermostat', () => {
 
     it('to 32 degrees if saving mode in OFF', () => {
       thermostat.savingModeStatus(false);
-      for(let i = 0; i < 20; i++) {
+      for (let i = 0; i < 20; i++) {
         thermostat.up();
       }
       expect(thermostat.getTemperature()).toEqual(32)
     });
   });
+
+  it('resets current temperature to 20 degrees', () => {
+    for (let i = 0; i < 9; i++) {
+      thermostat.down();
+    };
+    expect(thermostat.getTemperature()).toEqual(11)
+    thermostat.reset();
+    expect(thermostat.getTemperature()).toEqual(20)
+  });
+
+  it('returns current energy usage as low usage', () => {
+    for (let i = 0; i < 3; i++) {
+      thermostat.down();
+    };
+    expect(thermostat.currentEnergyUsage()).toBe('low-usage');
+  });
+
+  it('returns current energy usage as medium usage', () => {
+    for (let i = 0; i < 3; i++) {
+      thermostat.up();
+    };
+    expect(thermostat.currentEnergyUsage()).toBe('medium-usage');
+  });
+
+  it('returns current energy usage as high usage', () => {
+    thermostat.savingModeStatus(false)
+    for (let i = 0; i < 8; i++) {
+        thermostat.up();
+      };
+    expect(thermostat.currentEnergyUsage()).toBe('high-usage')
+  });
   
-
-
 });
